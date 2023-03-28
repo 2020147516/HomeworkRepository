@@ -1,0 +1,64 @@
+body {
+    background-color: ivory;
+}
+
+h1 {
+    text-align: center;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: 45px;
+}
+
+.a_login {
+    text-decoration: none;
+    color: rgb(0, 132, 255);
+    font-weight: bold;
+}
+
+.a_signup {
+    text-decoration: none;
+    color: rgb(255, 77, 0);
+    font-weight: bold;
+}
+
+.buttons {
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-top: 15px;
+    width: 105px;
+    height: 35px;
+}
+
+.menu {
+    padding: 10px;
+    border-bottom: 3px solid black;
+}
+
+.user_input {
+    padding: 30px;
+    border: 2px solid gray;
+}
+
+#id_label {
+    margin-right: 16px;
+}
+
+.user_input {
+    margin: 30px;
+}
+
+.label_a {
+    margin-right: 70px;
+}
+
+.label_b {
+    margin-right: 38px;
+}
+
+.label_c {
+    margin-right: 54px;
+}
+
+#blank {
+    margin-left: 107px;
+    margin-right: 16px;
+}
