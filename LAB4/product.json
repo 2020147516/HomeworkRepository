@@ -1,0 +1,52 @@
+{
+    "product": [
+        {
+            "name": "Stratocaster",
+            "category": "guitar",
+            "price": "400",
+            "info": "Squier Affinity Stratocaster, Laurel wood, 21fret"
+        },
+        {
+            "name": "Telecaster",
+            "category": "guitar",
+            "price": "400",
+            "info": "Squier Affinity Telecaster, Maple wood, 21fret"
+        },
+        {
+            "name": "Hollow Body",
+            "category": "guitar",
+            "price": "4000",
+            "info": "Gretsch G6136T White Falcon, Maple wood, 22fret"
+        },
+        {
+            "name": "Les Paul",
+            "category": "guitar",
+            "price": "1000",
+            "info": "Gopherwood Black940V, Mahogany wood, 22fret"
+        },
+        {
+            "name": "Classic Guitar",
+            "category": "guitar",
+            "price": "300",
+            "info": "Dexter M Classic, Mahogany wood, 19fret"
+        },
+        {
+            "name": "Bass",
+            "category": "bass",
+            "price": "250",
+            "info": "HEX R100M, Maple wood, 21fret"
+        },
+        {
+            "name": "Jazz Bass",
+            "category": "bass",
+            "price": "1500",
+            "info": "Fender ROAD WORN 60S JAZZ BASS, Rose wood, 20fret"
+        },
+        {
+            "name": "Drum Set",
+            "category": "drum",
+            "price": "1000",
+            "info": "YAMAHA StageCustom"
+        }
+    ]
+}

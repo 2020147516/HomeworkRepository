@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MainPage</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script src="inst.js"></script>
+</head>
+<body>
+    <div class="menu">
+        <h1 class="page_title">INST Market</h1>
+        <a href="index.html">메인페이지</a>
+        <a href="login.html">로그인</a>
+        <a href="signup.html">회원가입</a>
+    </div>
+    <div class="main_page">
+        <div class="search">
+            <h2>검색</h2>
+            <form>
+                <label>정렬
+                    <select id="sort" name="sort" style="width: 151px; margin-bottom: 5px;">
+                        <option selected>없음</option>
+                        <option>낮은 가격 순</option>
+                        <option>높은 가격 순</option>
+                    </select>
+                </label>
+                <br>
+                <label>분류
+                    <select id="category" name="category" style="width: 151px; margin-bottom: 5px;">
+                        <option selected>All</option>
+                        <option>Guitar</option>
+                        <option>Bass</option>
+                        <option>Drum</option>
+                    </select>
+                </label>
+                <br>
+                <label>검색
+                    <input id="search" name="search" type="search" style="margin-bottom: 7px; width: 151px;">
+                </label>
+                <input type="submit" value="검색" style="margin-left: 130px; width: 58px;">
+            </form>
+        </div>
+        <div class="main_contents">
+            <div class="contents_title">
+                <h2>제품</h2>
+            </div>
+            <div class="contents">
+                <div class="contents_item" onclick='info(0)'>
+                    <div class="image">
+                        <img src="strat.jpg" alt="stratocaster" width="363px" height="363px">
+                    </div>
+                    <div class="image_info">
+                    </div>
+                </div>
+                <div class="contents_item" onclick='info(1)'>
+                    <div class="image">
+                        <img src="tele.jpg" alt="telecaster" width="363px" height="363px">
+                    </div>
+                    <div class="image_info">
+                    </div>
+                </div>
+                <div class="contents_item" onclick='info(2)'>
+                    <div class="image">
+                        <img src="hollow.jpg" alt="hollow body" width="363px" height="363px">
+                    </div>
+                    <div class="image_info">
+                    </div>
+                </div>
+                <div class="contents_item" onclick='info(3)'>
+                    <div class="image">
+                        <img src="les_paul.jpg" alt="les paul" width="363px" height="363px">
+                    </div>
+                    <div class="image_info">
+                    </div>
+                </div>
+                <div class="contents_item" onclick='info(4)'>
+                    <div class="image">
+                        <img src="classic.jpg" alt="classic guitar" width="363px" height="363px">
+                    </div>
+                    <div class="image_info">
+                    </div>
+                </div>
+                <div class="contents_item" onclick='info(5)'>
+                    <div class="image">
+                        <img src="bass.jpg" alt="bass" width="363px" height="363px">
+                    </div>
+                    <div class="image_info">
+                    </div>
+                </div>
+                <div class="contents_item" onclick='info(6)'>
+                    <div class="image">
+                        <img src="jazzbass.jpg" alt="jazz bass" width="363px" height="363px">
+                    </div>
+                    <div class="image_info">
+                    </div>
+                </div>
+                <div class="contents_item" onclick='info(7)'>
+                    <div class="image">
+                        <img src="drumset.jpg" alt="drum set" width="363px" height="363px">
+                    </div>
+                    <div class="image_info">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
