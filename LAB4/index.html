@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+    <div class="page">
+        <hr class="hr1">
+        <header class="index-header">
+            <div class="index-animation">
+                <h1 class="index-title">인프밍 영화 정보 사이트입니다.</h1>
+            </div>
+            <nav class="nav-container">
+                <a href="index.html">메인페이지</a>
+                <a href="login.html">로그인</a>
+                <a href="signup.html">회원가입</a>
+            </nav>
+        </header>
+        <hr class="hr2">
+
+        <main class="index-main">
+            <section class="search-section" aria-label="영화 검색">
+                <input type="text" id="search-input" placeholder="키워드를 입력하세요." aria-label="검색 키워드">
+                <button type="button" id="filter-button">Filter results</button>
+            </section>
+
+            <section class="index-main-movie">
+                <h2>Movies</h2>
+                <hr class="hr3">
+
+                <div class="movie-layout">
+                    <aside class="sort-box" aria-label="영화 정렬 기준">
+                        <h3>정렬 기준</h3>
+                        <label>
+                            <input type="radio" name="sort" value="rating-desc" checked>
+                            평점 내림차순
+                        </label>
+                        <label>
+                            <input type="radio" name="sort" value="rating-asc">
+                            평점 오름차순
+                        </label>
+                        <label>
+                            <input type="radio" name="sort" value="date-desc">
+                            개봉 내림차순
+                        </label>
+                        <label>
+                            <input type="radio" name="sort" value="date-asc">
+                            개봉 오름차순
+                        </label>
+                    </aside>
+
+                    <div class="movie-content">
+                        <div id="movie-list" class="movie-items"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="about-section">
+                <h2>About</h2>
+                <hr class="hr3">
+                <div class="about-text">
+                    <p>
+                        여기는 인프밍 영화 정보 사이트입니다. 검색창에 원하는 영화 제목, 장르, 키워드를 입력하면
+                        조건에 맞는 영화가 필터링됩니다. 정렬 기준을 선택하면 평점 또는 개봉일 기준으로 영화 목록을
+                        다시 정렬할 수 있습니다.
+                    </p>
+                    <p>
+                        영화 포스터 위에 마우스를 올리면 줄거리가 표시됩니다. 스크롤을 아래로 내리면 product.json에
+                        저장된 영화가 순서대로 더 출력됩니다.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const movieList = document.getElementById("movie-list");
+        const searchInput = document.getElementById("search-input");
+        const filterButton = document.getElementById("filter-button");
+        const sortInputs = document.querySelectorAll("input[name='sort']");
+
+        const MOVIES_PER_LOAD = 12;
+        let allMovies = [];
+        let filteredMovies = [];
+        let loadedCount = 0;
+        let isLoading = false;
+
+        function escapeHTML(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function fallbackPoster(title) {
+            const safeTitle = escapeHTML(title).slice(0, 28);
+            const svg = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="240" height="360" viewBox="0 0 240 360">
+                    <rect width="240" height="360" fill="#eeeeee"/>
+                    <rect x="15" y="15" width="210" height="330" fill="#ffffff" stroke="#cccccc"/>
+                    <text x="120" y="165" text-anchor="middle" font-size="18" font-family="Arial" fill="#333333">No Image</text>
+                    <text x="120" y="195" text-anchor="middle" font-size="13" font-family="Arial" fill="#666666">${safeTitle}</text>
+                </svg>`;
+            return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+        }
+
+        async function fetchMoviesFromJSON() {
+            const urls = ["./product.json", "product.json"];
+            let lastError = null;
+
+            for (const url of urls) {
+                try {
+                    const response = await fetch(`${url}?v=${Date.now()}`, { cache: "no-store" });
+                    if (!response.ok) {
+                        throw new Error(`${url} 응답 오류: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    if (Array.isArray(data)) {
+                        return data;
+                    }
+                    if (Array.isArray(data.movies)) {
+                        return data.movies;
+                    }
+
+                    throw new Error("product.json 형식이 올바르지 않습니다.");
+                } catch (error) {
+                    lastError = error;
+                }
+            }
+
+            throw lastError;
+        }
+
+        async function loadMovies() {
+            allMovies = await fetchMoviesFromJSON();
+            filteredMovies = [...allMovies];
+            applyFilterAndSort();
+        }
+
+        function getSelectedSortValue() {
+            const selected = document.querySelector("input[name='sort']:checked");
+            return selected ? selected.value : "rating-desc";
+        }
+
+        function sortMovies(movies) {
+            const sortValue = getSelectedSortValue();
+            const sortedMovies = [...movies];
+
+            switch (sortValue) {
+                case "rating-desc":
+                    sortedMovies.sort((a, b) => Number(b.vote_average) - Number(a.vote_average));
+                    break;
+                case "rating-asc":
+                    sortedMovies.sort((a, b) => Number(a.vote_average) - Number(b.vote_average));
+                    break;
+                case "date-desc":
+                    sortedMovies.sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+                    break;
+                case "date-asc":
+                    sortedMovies.sort((a, b) => new Date(a.release_date) - new Date(b.release_date));
+                    break;
+                default:
+                    break;
+            }
+
+            return sortedMovies;
+        }
+
+        function applyFilterAndSort() {
+            const keyword = searchInput.value.trim().toLowerCase();
+
+            const searchedMovies = allMovies.filter((movie) => {
+                const searchableText = [
+                    movie.title,
+                    movie.release_date,
+                    movie.vote_average,
+                    movie.runtime,
+                    movie.overview,
+                    ...(movie.genres || []),
+                    ...(movie.keywords || [])
+                ].join(" ").toLowerCase();
+
+                return searchableText.includes(keyword);
+            });
+
+            filteredMovies = sortMovies(searchedMovies);
+            loadedCount = 0;
+            movieList.innerHTML = "";
+            loadMoreMovies();
+        }
+
+        function createMovieCard(movie) {
+            const title = escapeHTML(movie.title);
+            const releaseDate = escapeHTML(movie.release_date);
+            const voteAverage = escapeHTML(movie.vote_average);
+            const runtime = escapeHTML(movie.runtime);
+            const genres = escapeHTML((movie.genres || []).join(", "));
+            const overview = escapeHTML(movie.overview);
+            const poster = escapeHTML(movie.poster);
+
+            const article = document.createElement("article");
+            article.className = "movie-card";
+            article.innerHTML = `
+                <div class="poster-box">
+                    <img src="${poster}" alt="${title} poster">
+                    <div class="overview-box">
+                        <strong>줄거리:</strong>
+                        <p>${overview}</p>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3>${title}</h3>
+                    <p>📅 ${releaseDate}</p>
+                    <p>⭐ ${voteAverage} / 10</p>
+                    <p>⏱ ${runtime}분</p>
+                    <p class="genre-text">${genres}</p>
+                </div>
+            `;
+
+            const image = article.querySelector("img");
+            image.addEventListener("error", () => {
+                image.src = fallbackPoster(movie.title);
+            }, { once: true });
+
+            return article;
+        }
+
+        function loadMoreMovies() {
+            if (isLoading) return;
+            if (loadedCount >= filteredMovies.length) return;
+
+            isLoading = true;
+
+            const nextMovies = filteredMovies.slice(
+                loadedCount,
+                loadedCount + MOVIES_PER_LOAD
+            );
+
+            nextMovies.forEach((movie) => {
+                movieList.appendChild(createMovieCard(movie));
+            });
+
+            loadedCount += nextMovies.length;
+            isLoading = false;
+        }
+
+        filterButton.addEventListener("click", applyFilterAndSort);
+        searchInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                applyFilterAndSort();
+            }
+        });
+        sortInputs.forEach((input) => input.addEventListener("change", applyFilterAndSort));
+
+        function handleInfiniteScroll() {
+            if (isLoading) return;
+            if (loadedCount >= filteredMovies.length) return;
+
+            const movieListBottom = movieList.getBoundingClientRect().bottom;
+            const nearMovieListBottom = movieListBottom <= window.innerHeight + 250;
+
+            if (nearMovieListBottom) {
+                loadMoreMovies();
+            }
+        }
+
+        window.addEventListener("scroll", handleInfiniteScroll);
+        window.addEventListener("resize", handleInfiniteScroll);
+
+        loadMovies();
+    </script>
+</body>
+</html>
